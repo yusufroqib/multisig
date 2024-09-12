@@ -11,6 +11,16 @@ contract MultisigFactory {
         uint8 _quorum,
         address[] memory _validSigners
     ) external returns (Multisig newMulsig_, uint256 length_) {
+        // uint256 validSignersLength = _validSigners.length;
+        bool isCallerValidSigner;
+
+        for (uint256 i = 0; i < _validSigners.length; i++) {
+            if (_validSigners[i] == msg.sender) {
+                isCallerValidSigner = true;
+            }
+        }
+        require(isCallerValidSigner, "Wallet creator is not a valid signer");
+
         newMulsig_ = new Multisig(_quorum, _validSigners);
 
         multisigClones.push(newMulsig_);

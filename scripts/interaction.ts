@@ -71,6 +71,37 @@ async function main() {
 	);
 	console.log("Initiate Transfer Transaction", transferTx);
 	await transferTx.wait();
+	const quorumAfterTransfer = Number(await multisig.quorum());
+	const noOfValidSignersAfterTransfer = Number(
+		await multisig.noOfValidSigners()
+	);
+	const txCountAfterTransfer = Number(await multisig.txCount());
+	console.log("State Variables after transfer", {
+		quorumAfterTransfer,
+		noOfValidSignersAfterTransfer,
+		txCountAfterTransfer,
+	});
+	const walletBalanceBeforApproval = await web3CXI.balanceOf(firstMultisig);
+	console.log(
+		"Wallet balance for token before approval",
+		walletBalanceBeforApproval
+	);
+	const approveTransferTx = await multisig
+		.connect(otherAccount)
+		.approveTransferTx(1);
+
+	console.log({ approveTransferTx });
+	await approveTransferTx.wait();
+
+	const walletBalanceAfterApproval = await web3CXI.balanceOf(firstMultisig);
+	console.log(
+		"Wallet balance for token after approval",
+		walletBalanceAfterApproval
+	);
+
+	const approvedTx = await multisig.transactions(1);
+	console.log("Approved Transaction", approvedTx);
+	// console.log(first)
 }
 // async function getEvent(
 // 	contract: OnChainNFT,
