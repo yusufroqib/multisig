@@ -42,6 +42,22 @@ describe("MultisigFactory", function () {
 		});
 	});
 	describe("Create Multisig Wallet", function () {
+        it("Should revert if wallet creator is not among the valid signers", async function() {
+            const { multiSigFactory } = await loadFixture(deployMultisigFactory);
+			const [owner, otherAccount, thirdAccount, invalidSigner] =
+				await hre.ethers.getSigners();
+			const validSigners = [
+				owner.address,
+				otherAccount.address,
+				thirdAccount.address,
+			];
+			const _quorum = 2;
+			await expect(
+				multiSigFactory
+					.connect(invalidSigner)
+					.createMultisigWallet(_quorum, validSigners)
+			).to.be.revertedWith("Wallet creator is not a valid signer");
+        })
 		it("Should emit an event when deployed", async function () {
 			const { multiSigFactory } = await loadFixture(deployMultisigFactory);
 			const [owner, otherAccount, thirdAccount, invalidSigner] =
