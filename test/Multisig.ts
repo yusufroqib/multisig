@@ -186,17 +186,6 @@ describe("Multisig", function () {
 			);
 		});
 
-		it("Should revert if new quorum is less than or equal to valid signers", async function () {
-			const { multiSig, owner, otherAccount } = await loadFixture(
-				deployMultisig
-			);
-			const invalidQuorum = 5;
-
-			await expect(multiSig.updateQuorum(invalidQuorum)).to.be.revertedWith(
-				"quorum greater than valid signers"
-			);
-		});
-
 		it("Should revert if new quorum is greater than valid signers", async function () {
 			const { multiSig, owner } = await loadFixture(deployMultisig);
 			const invalidQuorum = 5;

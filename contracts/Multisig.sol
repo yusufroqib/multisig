@@ -28,7 +28,6 @@ contract Multisig {
 
     mapping(address => bool) public isValidSigner;
     mapping(uint256 => Transaction) public transactions; // txId -> Transaction
-    // signer -> transactionId -> bool (checking if an address has signed)
     mapping(address => mapping(uint256 => bool)) public hasSigned;
 
     constructor(uint8 _quorum, address[] memory _validSigners) {
@@ -63,7 +62,6 @@ contract Multisig {
     ) external {
         require(msg.sender != address(0), "address zero found");
         require(isValidSigner[msg.sender], "invalid signer");
-
         require(_amount > 0, "can't send zero amount");
         require(_recipient != address(0), "address zero found");
         require(_tokenAddress != address(0), "address zero found");
@@ -91,9 +89,8 @@ contract Multisig {
 
     function approveTransferTx(uint8 _txId) external {
         Transaction storage trx = transactions[_txId];
-
+        require(msg.sender != address(0), "address zero found");
         require(trx.id != 0, "invalid tx id");
-
         require(
             trx.trxType == TrxType.transferFund,
             "Invalid transaction type"
@@ -141,12 +138,12 @@ contract Multisig {
 
     function approveQuorumUpdate(uint8 _trxId) external {
         Transaction storage updateRequest = transactions[_trxId];
+        require(msg.sender != address(0), "address zero found");
         require(updateRequest.id != 0, "invalid update id");
         require(
             updateRequest.trxType == TrxType.updateQuorum,
             "Invalid transaction type"
         );
-
         require(!updateRequest.isCompleted, "quorum update already completed");
         require(
             updateRequest.noOfApproval < quorum,
