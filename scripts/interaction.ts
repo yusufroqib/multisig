@@ -28,31 +28,49 @@ async function main() {
 	const _quorum = 2;
 	const multisigClonesBeforeCreating =
 		await multisigFactory.getMultiSigClones();
-	console.log(
-		"Multisig clones before creating new wallet",
-		multisigClonesBeforeCreating
-	);
+	// console.log(
+	// 	"Multisig clones before creating new wallet",
+	// 	multisigClonesBeforeCreating
+	// );
 	const CreateWalletTxn = await multisigFactory.createMultisigWallet(
 		_quorum,
 		validSigners
 	);
-	console.log({ CreateWalletTxn });
+	// console.log({ CreateWalletTxn });
 
 	await CreateWalletTxn.wait();
 
 	const multisigClonesAfterCreating = await multisigFactory.getMultiSigClones();
-	console.log(
-		"Multisig clones after creating new wallet",
-		multisigClonesAfterCreating
-	);
-	const firstMultisig = multisigClonesAfterCreating[0];
+	// console.log(
+	// 	"Multisig clones after creating new wallet",
+	// 	multisigClonesAfterCreating
+	// );
+	const firstMultisig = multisigClonesAfterCreating[1];
 	const multisig: Multisig = await ethers.getContractAt(
 		"Multisig",
 		firstMultisig
 	);
 	const amount = ethers.parseUnits("100", 18);
 	const depositTx = await web3CXI.transfer(multisig, amount);
-	console.log({ depositTx });
+	// console.log({ depositTx });
+
+	const quorum = Number(await multisig.quorum());
+	const noOfValidSigners = Number(await multisig.noOfValidSigners());
+	const txCount = Number(await multisig.txCount());
+	console.log("State Variables before transfer", {
+		quorum,
+		noOfValidSigners,
+		txCount,
+	});
+
+	const transferAmount = ethers.parseUnits("50", 18);
+	const transferTx = await multisig.transfer(
+		transferAmount,
+		thirdAccount.address,
+		Web3CXIAddress
+	);
+	console.log("Initiate Transfer Transaction", transferTx);
+	await transferTx.wait();
 }
 // async function getEvent(
 // 	contract: OnChainNFT,
