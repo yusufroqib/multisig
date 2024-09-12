@@ -54,14 +54,14 @@ async function main() {
 	// const depositTx = await web3CXI.transfer(multisig, amount);
 	// // console.log({ depositTx });
 
-	// const quorum = Number(await multisig.quorum());
-	// const noOfValidSigners = Number(await multisig.noOfValidSigners());
-	// const txCount = Number(await multisig.txCount());
-	// console.log("State Variables before transfer", {
-	// 	quorum,
-	// 	noOfValidSigners,
-	// 	txCount,
-	// });
+	const quorum = Number(await multisig.quorum());
+	const noOfValidSigners = Number(await multisig.noOfValidSigners());
+	const txCount = Number(await multisig.txCount());
+	console.log("State Variables before transfer", {
+		quorum,
+		noOfValidSigners,
+		txCount,
+	});
 
 	// const transferAmount = ethers.parseUnits("50", 18);
 	// const transferTx = await multisig.transfer(
@@ -102,13 +102,19 @@ async function main() {
 	// const approvedTx = await multisig.transactions(1);
 	// console.log("Approved Transaction", approvedTx);
 
-	const newQuorum = 3;
-	const updateQuorumTx = await multisig.updateQuorum(newQuorum);
-	const quorumBeforeUpdate = Number(await multisig.quorum());
-	console.log("Quorum before updating", quorumBeforeUpdate);
-	console.log({ updateQuorumTx });
-	await updateQuorumTx.wait();
+	// const newQuorum = 3;
+	// const updateQuorumTx = await multisig.updateQuorum(newQuorum);
+	// const quorumBeforeUpdate = Number(await multisig.quorum());
+	// console.log("Quorum before updating", quorumBeforeUpdate);
+	// console.log({ updateQuorumTx });
+	// await updateQuorumTx.wait();
 
+
+	const approveQuorumUpdateTx = await multisig.connect(otherAccount).approveQuorumUpdate(2)
+	console.log({approveQuorumUpdateTx})
+	await approveQuorumUpdateTx.wait()
+	const quorumAfterUpdate = Number(await multisig.quorum());
+	console.log("Quorum after updating", quorumAfterUpdate);
 	// console.log(first)
 }
 // async function getEvent(
