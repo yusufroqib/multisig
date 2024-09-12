@@ -7,7 +7,7 @@ const config: HardhatUserConfig = {
 		// for testnet
 		"lisk-sepolia": {
 			url: vars.get("LISK_RPC_URL"),
-			accounts: [vars.get("ACCOUNT_PRIVATE_KEY")],
+			accounts: [vars.get("ACCOUNT_PRIVATE_KEY"), vars.get("SECOND_PRIVATE_KEY"), vars.get("THIRD_PRIVATE_KEY")  ],
 			gasPrice: 1000000000,
 		},
 		"arbitrum-sepolia": {
