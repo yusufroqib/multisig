@@ -4,17 +4,11 @@ import {
 } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import { expect } from "chai";
 import hre, { ethers } from "hardhat";
-import {
-	MultisigFactory,
-	MultisigFactory__factory,
-} from "../typechain-types";
+import { MultisigFactory, MultisigFactory__factory } from "../typechain-types";
 import { ContractTransactionResponse } from "ethers";
 
 describe("MultisigFactory", function () {
 	async function deployMultisigFactory() {
-		const [owner, otherAccount, thirdAccount, invalidSigner] =
-			await hre.ethers.getSigners();
-
 		const multisigFactory: MultisigFactory__factory =
 			await hre.ethers.getContractFactory("MultisigFactory");
 		const multiSigFactory = await multisigFactory.deploy();

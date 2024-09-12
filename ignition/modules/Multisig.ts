@@ -4,9 +4,9 @@ const tokenAddress = "0xfc04Cb7392147636162c660c144783763538fe69";
 
 const MultisigModule = buildModule("MultisigModule", (m) => {
 
-    const save = m.contract("Multisig", [tokenAddress]);
+    const multisig = m.contract("Multisig", [tokenAddress]);
 
-    return { save };
+    return { multisig };
 });
 
 export default MultisigModule;
