@@ -63,6 +63,21 @@ describe("Multisig", function () {
 		});
 	});
 
+	describe("Mint token", function () {
+		it("Should mint token", async function () {
+			const { multiSig, owner, token } = await loadFixture(deployMultisig);
+			const amount = BigInt(10);
+			const parsedAmt = ethers.parseUnits("10", 18);
+
+			const balanceBeForeMint = await token.balanceOf(owner);
+			const txRes = await token.mint(amount);
+			await txRes.wait();
+			const balanceAfterMint = await token.balanceOf(owner);
+			 expect(await token.owner()).to.equal(owner.address);
+			expect(balanceAfterMint).to.equal(balanceBeForeMint + parsedAmt);
+		});
+	});
+
 	describe("Transfer", function () {
 		it("Should create a new transfer transaction", async function () {
 			const { multiSig, owner, otherAccount, token } = await loadFixture(

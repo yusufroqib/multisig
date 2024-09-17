@@ -1,11 +1,5 @@
 import hre, { ethers } from "hardhat";
-import {
-	Multisig,
-	MultisigFactory,
-	MultisigFactory__factory,
-	Web3CXI,
-} from "../typechain-types";
-import { ContractTransactionResponse } from "ethers";
+import { Multisig, MultisigFactory, Web3CXI } from "../typechain-types";
 
 async function main() {
 	const MultisigFactoryAddress = "0xD8aF8f69ac074939E8ab9A6f04ce2CE9692ED179";
@@ -18,8 +12,7 @@ async function main() {
 		"Web3CXI",
 		Web3CXIAddress
 	);
-	const [owner, otherAccount, thirdAccount] =
-		await hre.ethers.getSigners();
+	const [owner, otherAccount, thirdAccount] = await hre.ethers.getSigners();
 	const validSigners = [
 		owner.address,
 		otherAccount.address,
@@ -45,7 +38,7 @@ async function main() {
 		"Multisig clones after creating new wallet",
 		multisigClonesAfterCreating
 	);
-	const firstMultisig = multisigClonesAfterCreating[0];
+	const firstMultisig = multisigClonesBeforeCreating[2];
 	const multisig: Multisig = await ethers.getContractAt(
 		"Multisig",
 		firstMultisig
@@ -77,15 +70,18 @@ async function main() {
 	);
 	const txCountAfterTransfer = Number(await multisig.txCount());
 	console.log("State Variables after transfer", {
-		quorumAfterTransfer,
-		noOfValidSignersAfterTransfer,
+		// quorumAfterTransfer,
+		// noOfValidSignersAfterTransfer,
 		txCountAfterTransfer,
 	});
 	const walletBalanceBeforApproval = await web3CXI.balanceOf(firstMultisig);
+	const thirdAcctBalBefore = await web3CXI.balanceOf(thirdAccount.address);
+
 	console.log(
 		"Wallet balance for token before approval",
 		walletBalanceBeforApproval
 	);
+	console.log({ thirdAcctBalBefore });
 	const approveTransferTx = await multisig
 		.connect(otherAccount)
 		.approveTransferTx(1);
@@ -99,6 +95,9 @@ async function main() {
 		walletBalanceAfterApproval
 	);
 
+	const thirdAcctBalAfter = await web3CXI.balanceOf(thirdAccount.address);
+	console.log({ thirdAcctBalAfter });
+
 	const approvedTx = await multisig.transactions(1);
 	console.log("Approved Transaction", approvedTx);
 
@@ -109,10 +108,11 @@ async function main() {
 	console.log({ updateQuorumTx });
 	await updateQuorumTx.wait();
 
-
-	const approveQuorumUpdateTx = await multisig.connect(otherAccount).approveQuorumUpdate(2)
-	console.log({approveQuorumUpdateTx})
-	await approveQuorumUpdateTx.wait()
+	const approveQuorumUpdateTx = await multisig
+		.connect(otherAccount)
+		.approveQuorumUpdate(2);
+	console.log({ approveQuorumUpdateTx });
+	await approveQuorumUpdateTx.wait();
 	const quorumAfterUpdate = Number(await multisig.quorum());
 	console.log("Quorum after updating", quorumAfterUpdate);
 }
